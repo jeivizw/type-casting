@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout com Simulação de Casting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 md:p-8 text-gray-900">
+
+    <main class="max-w-4xl w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden flex flex-col md:flex-row border border-gray-100">
+        
+        <div class="p-6 md:p-10 md:w-1/2 w-full">
+            <h1 class="text-2xl font-semibold mb-2">Simulador de Carrinho</h1>
+            <p class="text-sm text-gray-500 mb-8">Insira os dados em formato de texto. O sistema fará a conversão (casting) automaticamente.</p>
+
+            <form id="simuladorForm" class="space-y-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1" for="inputPreco">Preço Unitário (String)</label>
+                        <input type="text" id="inputPreco" value="125.50" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-black focus:ring-1 focus:ring-black outline-none transition text-sm">
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <div class="w-1/2">
+                            <label class="block text-sm text-gray-600 mb-1" for="inputQtd">Quantidade (String)</label>
+                            <input type="text" id="inputQtd" value="3" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-black focus:ring-1 focus:ring-black outline-none transition text-sm">
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block text-sm text-gray-600 mb-1" for="inputCupom">Aplicar Cupom?</label>
+                            <select id="inputCupom" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white focus:border-black focus:ring-1 focus:ring-black outline-none transition text-sm">
+                                <option value="true">"true"</option>
+                                <option value="false">"false"</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-black text-white rounded-lg py-3.5 font-medium hover:bg-gray-800 focus:ring-4 focus:ring-gray-200 transition active:scale-[0.98]">
+                    Executar Simulação
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-gray-50 p-6 md:p-10 md:w-1/2 w-full flex flex-col border-t md:border-t-0 md:border-l border-gray-200">
+            <h2 class="text-lg font-semibold mb-6">Resumo do Processamento</h2>
+            
+            <div id="console-output" class="text-sm text-gray-600 flex-grow">
+                <p class="text-gray-400 italic">Aguardando execução da simulação...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function executarSimulacao() {
+            const output = document.getElementById('console-output');
+            
+            let inputPreco = document.getElementById('inputPreco').value;
+            let inputQtd = document.getElementById('inputQtd').value;
+            let inputCupom = document.getElementById('inputCupom').value;
+
+            let preco = parseFloat(inputPreco);
+            let qtd = parseInt(inputQtd, 10);
+            let temCupom = (inputCupom === "true");
+
+            let subtotal = Number(preco * qtd);
+            let desconto = temCupom ? subtotal * 0.1 : 0;
+            let totalFinal = subtotal - desconto;
+
+            output.innerHTML = `
+                <div class="space-y-4">
+                    <div class="space-y-2 pb-4 border-b border-gray-200">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Casting de Preço:</span>
+                            <span class="font-medium text-gray-900">${typeof preco} (${preco})</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Casting de Qtd:</span>
+                            <span class="font-medium text-gray-900">${typeof qtd} (${qtd})</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Casting de Cupom:</span>
+                            <span class="font-medium text-gray-900">${typeof temCupom} (${temCupom})</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-base font-semibold text-gray-900">Total Final</span>
+                        <span class="text-xl font-bold text-black">R$ ${totalFinal.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('simuladorForm').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            document.getElementById('console-output').innerHTML = '<p class="text-gray-400 italic">Processando dados...</p>';
+            setTimeout(executarSimulacao, 400);
+        });
+    </script>
+</body>
+</html>
